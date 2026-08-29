@@ -6,10 +6,44 @@
 <title>FREEDOM SYSTEM — Sal del sistema con conocimiento y IA</title>
 <meta name="description" content="Freedom System: curso de trading consciente con inteligencia artificial. Aprende a pensar, no a seguir senales. Pago en bolivares, criptomonedas o tarjeta.">
 <meta name="theme-color" content="#010a03">
+<meta name="author" content="Infante · Freedom System">
+<meta name="robots" content="index, follow">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     ⚠️  AL ACTIVAR EL DOMINIO PROPIO: cambia la URL en las 4 etiquetas
+     marcadas con «URL DEL SITIO» (canonical, og:url, og:image y
+     twitter:image). Es lo único que hay que tocar aquí.
+     ═══════════════════════════════════════════════════════════════════ -->
+<link rel="canonical" href="https://cpalencia09.github.io/freedomsystem/"><!-- URL DEL SITIO -->
+
+<!-- Vista previa al compartir (WhatsApp, Instagram, Telegram, Facebook) -->
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Freedom System">
 <meta property="og:title" content="FREEDOM SYSTEM — Sal del sistema con conocimiento y IA">
-<meta property="og:description" content="Curso de trading consciente con IA. 50% mente, 50% inteligencia artificial. Sin senales, sin humo.">
+<meta property="og:description" content="Curso de trading consciente con IA. 50% mente, 50% inteligencia artificial. Sin señales, sin humo.">
 <meta property="og:locale" content="es_ES">
+<meta property="og:url" content="https://cpalencia09.github.io/freedomsystem/"><!-- URL DEL SITIO -->
+<meta property="og:image" content="https://cpalencia09.github.io/freedomsystem/og.png"><!-- URL DEL SITIO -->
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Freedom System — Sal del sistema con conocimiento. Trading con mente e inteligencia artificial.">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FREEDOM SYSTEM — Sal del sistema con conocimiento y IA">
+<meta name="twitter:description" content="Curso de trading consciente con IA. 50% mente, 50% inteligencia artificial. Sin señales, sin humo.">
+<meta name="twitter:image" content="https://cpalencia09.github.io/freedomsystem/og.png"><!-- URL DEL SITIO -->
+
+<!-- Iconos -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- ═══ ANALÍTICA Y PÍXEL ═══════════════════════════════════════════
+     Pega aquí el código de Meta Pixel y/o Google Analytics ANTES de
+     empezar la campaña: sin el píxel instalado desde el primer día no
+     se acumula audiencia para hacer retargeting después.
+     ═══════════════════════════════════════════════════════════════════ -->
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -2094,9 +2128,9 @@ nav { border-bottom-color: #0a2e10; }
       <ul class="footer-links">
         <li><a href="#includes">Qué incluye</a></li>
         <li><a href="#pricing">Packs</a></li>
-        <li><a href="#" target="_blank">Instagram</a></li>
-        <li><a href="#">Telegram</a></li>
-        <li><a href="#">Privacidad</a></li>
+        <li id="footIgItem"><a id="footIg" href="#" target="_blank" rel="noopener">Instagram</a></li>
+        <li id="footTgItem"><a id="footTg" href="#" target="_blank" rel="noopener">Telegram</a></li>
+        <li><a href="privacidad.html">Privacidad</a></li>
       </ul>
     </div>
     <div class="footer-legal">
@@ -2392,6 +2426,7 @@ const PAY_CONFIG = {
   /* ── Contacto para confirmar los pagos ────────────────── */
   whatsapp:  '584120000000',          // número con código de país, SIN + ni espacios
   instagram: 'tu_instagram',          // usuario sin @  (deja '' para ocultar el botón)
+  telegram:  '',                      // usuario o grupo sin @ (deja '' para ocultar el enlace del pie)
   email:     'pagos@tudominio.com',   // se usa si no hay WhatsApp configurado
 
   /* ── Planes ───────────────────────────────────────────── */
@@ -2445,6 +2480,25 @@ const PAY_CONFIG = {
   }
 };
 /* ═══════ FIN DE LA CONFIGURACIÓN ═══════════════════════════ */
+
+/* Enlaces sociales del pie de página: se rellenan desde PAY_CONFIG.
+   Si el usuario está vacío, el enlace se oculta en lugar de quedar muerto. */
+(function () {
+  const social = [
+    { item: 'footIgItem', link: 'footIg', user: PAY_CONFIG.instagram, base: 'https://instagram.com/' },
+    { item: 'footTgItem', link: 'footTg', user: PAY_CONFIG.telegram,  base: 'https://t.me/'          }
+  ];
+  const apply = () => social.forEach(s => {
+    const li = document.getElementById(s.item);
+    const a  = document.getElementById(s.link);
+    if (!li || !a) return;
+    const user = (s.user || '').trim().replace(/^@/, '');
+    if (user && user.indexOf('tu_') !== 0) { a.href = s.base + user; }
+    else { li.style.display = 'none'; }
+  });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
+  else apply();
+})();
 
 
 const payState = {
@@ -2728,11 +2782,20 @@ window.addEventListener('scroll', () => {
 
 /* ─── Countdown ───────────────────────────────────── */
 (function() {
+  /* Algunos navegadores bloquean el almacenamiento (modo privado, ajustes de
+     cookies, navegadores dentro de apps). Sin este blindaje, la excepción
+     detendría todo el script que viene después. */
+  const store = {
+    get(k)    { try { return localStorage.getItem(k); }   catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); }       catch (e) {} },
+    del(k)    { try { localStorage.removeItem(k); }       catch (e) {} }
+  };
+
   const key = 'ep_cd_end';
-  let end = localStorage.getItem(key);
+  let end = store.get(key);
   if (!end || Date.now() > parseInt(end)) {
     end = Date.now() + 24 * 60 * 60 * 1000;
-    localStorage.setItem(key, end);
+    store.set(key, end);
   }
   function tick() {
     const hEl = document.getElementById('cd-h');
@@ -2740,7 +2803,7 @@ window.addEventListener('scroll', () => {
     const sEl = document.getElementById('cd-s');
     if (!hEl || !mEl || !sEl) return;
     const diff = parseInt(end) - Date.now();
-    if (diff <= 0) { localStorage.removeItem(key); return; }
+    if (diff <= 0) { store.del(key); return; }
     hEl.textContent = String(Math.floor(diff / 3600000)).padStart(2,'0');
     mEl.textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2,'0');
     sEl.textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2,'0');

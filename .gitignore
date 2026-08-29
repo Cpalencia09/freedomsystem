@@ -1,0 +1,13 @@
+# Este repositorio es público: todo lo que se commitea queda visible en internet.
+# Los documentos de inversión son confidenciales y NO deben publicarse aquí.
+Freedom_System_Propuesta*.html
+Freedom_System_Justificacion*.html
+Freedom_System_Respuestas*.html
+Freedom_System_Base_de_Conocimiento*
+
+# Archivos temporales del sistema
+Thumbs.db
+desktop.ini
+.DS_Store
+*.tmp
+_tmp*

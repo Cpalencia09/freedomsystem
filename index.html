@@ -2168,7 +2168,7 @@ nav { border-bottom-color: #0a2e10; }
     <div class="pay-amount">
       <div class="pay-amount-usd"><span class="curr">$</span><span id="payUsd">300</span></div>
       <div class="pay-amount-conv" id="payConv">≈ <strong>Bs 151.180,02</strong></div>
-      <div class="pay-rate-note" id="payRateNote"><span class="live-dot"></span>Tasa BCV Bs 755,90 · actualizada hoy</div>
+      <div class="pay-rate-note" id="payRateNote"><span class="live-dot"></span>Consultando la tasa BCV del día…</div>
     </div>
 
     <!-- Tabs -->
@@ -2442,7 +2442,8 @@ const PAY_CONFIG = {
     cedula:   'V-00.000.000',
     titular:  'NOMBRE APELLIDO',
     cuenta:   '0102-0000-00-0000000000',   // deja '' si solo aceptas Pago Móvil
-    rate:     755.90,                       // tasa de respaldo si falla la consulta automática
+    rate:     791.67,                       // respaldo final (BCV del 28/08/2026). Solo se usa si falla
+                                            // la consulta Y el visitante no tiene ninguna tasa guardada
     autoRate: true,                         // true = consulta la tasa BCV oficial cada vez que se abre
     rateApi:  'https://ve.dolarapi.com/v1/dolares/oficial'
   },
@@ -2514,23 +2515,51 @@ function payNetData()   { return PAY_CONFIG.crypto.nets.find(n => n.id === paySt
 function payFmtVes(n)   { return 'Bs ' + n.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function paySet(id, txt) { const el = document.getElementById(id); if (el) el.textContent = txt; }
 
-/* ─── Tasa BCV oficial ────────────────────────────────────── */
+/* ─── Tasa BCV oficial ──────────────────────────────────────
+   Se consulta al cargar la pagina y cada vez que se abre el checkout, asi que
+   la tasa se renueva sola cada dia sin tocar el codigo.
+
+   La ultima tasa buena queda guardada en el navegador del visitante. Si algun
+   dia el servicio no responde, se usa esa en lugar del valor de respaldo del
+   config, que envejece en cuanto pasan unas semanas sin tocarlo. Orden de
+   preferencia: tasa del dia → ultima tasa conocida → respaldo del config. */
+const RATE_CACHE = 'fs_bcv_rate';
+const rateStore = {
+  get()  { try { return JSON.parse(localStorage.getItem(RATE_CACHE) || 'null'); } catch (e) { return null; } },
+  set(o) { try { localStorage.setItem(RATE_CACHE, JSON.stringify(o)); } catch (e) {} }
+};
+
+function payApplyRate(value, fechaISO) {
+  const v = Number(value);
+  if (!isFinite(v) || v <= 0) return false;
+  payState.rate = v;
+  const f = fechaISO ? new Date(fechaISO) : null;
+  payState.rateLabel = (f && !isNaN(f))
+    ? 'BCV · ' + f.toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    : 'BCV oficial';
+  payRefresh();
+  return true;
+}
+
 function payFetchRate() {
   const cfg = PAY_CONFIG.ves;
   if (!cfg.autoRate || !cfg.rateApi) return;
+
+  /* 1 · Pintar de inmediato la ultima tasa conocida, para no mostrar nunca el
+        valor de respaldo si ya hubo una consulta buena antes. */
+  const cached = rateStore.get();
+  if (cached) payApplyRate(cached.v, cached.d);
+
+  /* 2 · Pedir la tasa del dia y actualizar si llega. */
   fetch(cfg.rateApi, { cache: 'no-store' })
     .then(r => r.ok ? r.json() : Promise.reject())
     .then(d => {
       const v = Number(d.promedio || d.venta || d.compra || d.price);
-      if (!isFinite(v) || v <= 0) return;
-      payState.rate = v;
-      const f = d.fechaActualizacion ? new Date(d.fechaActualizacion) : null;
-      payState.rateLabel = f && !isNaN(f)
-        ? 'BCV · ' + f.toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit', year: 'numeric' })
-        : 'BCV oficial';
-      payRefresh();
+      if (payApplyRate(v, d.fechaActualizacion)) {
+        rateStore.set({ v: v, d: d.fechaActualizacion || null, t: Date.now() });
+      }
     })
-    .catch(() => { /* se mantiene la tasa de respaldo del config */ });
+    .catch(() => { /* queda la tasa cacheada o, en su defecto, la del config */ });
 }
 
 /* ─── Redes cripto ────────────────────────────────────────── */

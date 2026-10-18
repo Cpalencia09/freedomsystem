@@ -8,6 +8,21 @@ No hay build, ni dependencias, ni backend.
 
 **En producción:** https://cpalencia09.github.io/freedomsystem/
 
+## Material de marca
+
+En `marca/` están el símbolo del halcón y el manual de marca en PDF:
+
+| Archivo | Para qué |
+|---------|----------|
+| `logo-oscuro.png` (+ `-512`, `-256`) | Fondo oscuro. Es el que usan la barra de navegación y el pie. |
+| `logo-claro.png` (+ `-512`, `-256`) | Fondo blanco o papel. |
+| `logo-mono-verde.png` / `logo-mono-void.png` | Una sola tinta, para bordados, sellos y fondos de color plano. |
+| `logo-fondo-void.png` | Ya aplanado sobre `#010a03`, para donde no admitan PNG con transparencia. |
+| `Manual-de-Marca-Freedom-System.pdf` | Identidad visual y verbal completa: color, tipografía, tono de voz y usos incorrectos. |
+
+Por debajo de 40 px de alto el símbolo deja de leerse: para el favicon se usa el monograma
+`favicon.svg`, no el halcón.
+
 ## Ver la página en local
 
 Abre `index.html` en el navegador con doble clic, o sirve la carpeta:

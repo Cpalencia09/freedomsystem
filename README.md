@@ -6,7 +6,7 @@ integrada para **bolívares, criptomonedas y tarjeta**.
 Sitio estático de un solo archivo: `index.html` contiene el HTML, el CSS y el JavaScript.
 No hay build, ni dependencias, ni backend.
 
-**En producción:** https://cpalencia09.github.io/freedomsystem/
+**En producción:** https://freedomsystem.net/
 
 ## Material de marca
 

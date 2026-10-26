@@ -33,13 +33,21 @@ python -m http.server 8000
 
 ## Precios
 
-| Plan | Precio |
-|------|--------|
-| Acceso Base (curso completo) | $300 · pago único |
-| Cuota mensual (IA + comunidad + actualizaciones) | $50/mes |
+Cuatro productos, que se contratan por separado:
 
-Para cambiarlos hay que tocar dos sitios: el bloque `PAY_CONFIG.plans` del script y los textos
-visibles (tarjeta de precios, barra fija, popup de salida, botón flotante, CTA final y FAQ).
+| Producto | Precio | Estado |
+|----------|--------|--------|
+| **La academia** — primera promoción, 50 plazas, en directo | $299 · pago único | Abierta |
+| **La comunidad** — sala privada, grabaciones e IA | $50/mes · sin permanencia | Abierta |
+| **El curso completo** — grabado, sin límite de plazas | $299 · el mismo precio | Abre en 2027 |
+| **La mentoría** — uno a uno con Infante | Por anunciar | Por definir |
+
+La academia y la comunidad se cobran por el checkout. El curso y la mentoría abren la lista de
+espera por WhatsApp (`payWaitlist`), porque todavía no se cobran.
+
+Para cambiar un precio hay que tocar **dos** sitios: el bloque `PAY_CONFIG.plans` del script y los
+textos visibles, que están en el panel de accesos (`#planes`), la sección de la academia, la
+tarjeta de precios, la barra fija, el popup de salida y la FAQ.
 
 ## Configurar los datos de cobro
 
@@ -50,18 +58,29 @@ Todo lo editable está en el bloque **`PAY_CONFIG`**, dentro del `<script>` al f
 - `instagram` — usuario sin `@` (déjalo vacío para ocultar ese botón).
 - `email` — se usa como respaldo si no hay WhatsApp configurado.
 - `ves` — banco, teléfono, cédula/RIF, titular y cuenta para Pago Móvil y transferencia.
-- `crypto.nets` — direcciones de wallet por red (USDT TRC20, USDT BEP20, Binance Pay, Bitcoin).
+- `crypto.nets` — direcciones de wallet por red (USDT TRC20, Binance Pay, Bitcoin). BEP20 se
+  retiró: una dirección de TRON no sirve en BNB Smart Chain.
 - `card.links` — enlace de pago con tarjeta por plan (Stripe Payment Link, PayPal, etc.).
 
-Los valores actuales son marcadores (`TU_DIRECCION_USDT_TRC20`, `0412-0000000`…): hay que
-sustituirlos por los reales antes de aceptar pagos.
+Los datos de cobro ya son los reales. Lo único que sigue vacío a propósito es `card.links` (el
+enlace de pago con tarjeta): mientras lo esté, ese panel ofrece pedir el enlace por WhatsApp.
 
 ### Tasa de cambio
 
-El monto en bolívares se calcula con la **tasa BCV oficial**, consultada en cada apertura del checkout
-a `https://ve.dolarapi.com/v1/dolares/oficial`. Si la consulta falla se usa `ves.rate` como respaldo,
-así que conviene mantener ese valor razonablemente actualizado. Para desactivar la consulta automática
-y usar siempre una tasa fija, pon `autoRate: false`.
+El monto en bolívares se calcula con la **tasa del mercado paralelo**, consultada en cada apertura
+del checkout a `https://ve.dolarapi.com/v1/dolares/paralelo` (devuelve `{promedio, fechaActualizacion}`
+y permite CORS, que es lo que hace falta para pedirla desde el navegador del visitante).
+
+Si la consulta falla se reutiliza la última tasa que el visitante tuviera guardada, y si no hay
+ninguna, `ves.rate` como respaldo final — conviene mantener ese valor razonablemente actualizado.
+Para desactivar la consulta automática y usar siempre una tasa fija, pon `autoRate: false`.
+
+**Historial de la fuente.** Antes se usaba `criptoya.com/api/binancep2p/usdt/ves/1`, la tasa Binance
+P2P. El **25/10/2026** ese servicio empezó a responder **403** (bloqueo de Cloudflare), tanto desde
+el navegador como desde consola, y el sitio llevaba días cobrando con el valor de respaldo sin
+avisar. El paralelo de dolarapi va a menos del 1% de la de Binance y se actualiza varias veces al
+día. El parser acepta las dos formas de respuesta, así que si criptoya revive basta con cambiar
+`rateApi`.
 
 ### Tarjeta
 

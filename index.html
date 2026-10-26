@@ -194,7 +194,7 @@ nav {
 
 /* ─── HERO ───────────────────────────────────────────────── */
 #hero {
-  min-height: 100vh;
+  min-height: 88vh;
   display: flex; flex-direction: column; justify-content: center;
   padding: 158px 24px 80px;
   position: relative; overflow: hidden;
@@ -1917,6 +1917,150 @@ nav { border-bottom-color: #0a2e10; }
   .pay-tab { font-size: 9px; letter-spacing: 0.04em; }
 }
 
+
+/* ═══════════════════════════════════════════════════════════
+   LOS TRES ACCESOS · el panel único que recibe al visitante
+   Prefijo .acc- para no chocar con nada (ver .bar/.cite-rule).
+   Todo el movimiento es CSS: sin JS el panel se ve completo.
+   ═══════════════════════════════════════════════════════════ */
+#planes { padding-block: 0 104px; position: relative; z-index: 2; }
+
+.acc-panel {
+  max-width: 1120px; margin: 0 auto;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 0 70px rgba(0,255,65,0.07), inset 0 1px 0 rgba(0,255,65,0.08);
+}
+
+/* La «pestaña» de la cabecera */
+.acc-chrome {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(0,255,65,0.045), transparent);
+}
+.acc-tab {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--green);
+  padding: 12px 18px; margin-bottom: -1px;
+  border: 1px solid var(--border-bright); border-bottom-color: var(--bg-panel);
+  border-radius: 9px 9px 0 0; background: var(--bg-panel);
+}
+.acc-dots { display: flex; gap: 6px; padding-bottom: 14px; }
+.acc-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--border-bright); }
+
+.acc-rows { display: grid; grid-template-columns: repeat(3, 1fr); }
+
+.acc-row {
+  padding: 36px 30px 32px;
+  display: flex; flex-direction: column;
+  border-left: 1px solid var(--border);
+}
+.acc-row:first-child { border-left: none; }
+.acc-row.is-open { background: radial-gradient(120% 90% at 50% 0%, rgba(0,255,65,0.05), transparent 70%); }
+
+.acc-state {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--grey-400);
+  display: flex; align-items: center; gap: 7px; margin-bottom: 18px;
+}
+.acc-row.is-open .acc-state { color: var(--green); }
+.acc-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+@media (prefers-reduced-motion: no-preference) {
+  .acc-dot { animation: accPulse 2.4s ease-out infinite; }
+}
+@keyframes accPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(0,255,65,0.45); }
+  70%  { box-shadow: 0 0 0 9px rgba(0,255,65,0); }
+  100% { box-shadow: 0 0 0 0 rgba(0,255,65,0); }
+}
+
+.acc-name {
+  font-family: var(--font-display); font-size: 32px; line-height: 1;
+  text-transform: uppercase; color: var(--white); margin: 0 0 11px;
+}
+.acc-note {
+  font-size: 13.5px; line-height: 1.65; color: var(--grey-200);
+  margin: 0 0 24px; min-height: 66px;
+}
+
+.acc-price {
+  font-family: var(--font-display); font-size: 48px; line-height: 1;
+  color: var(--green); margin-top: auto;
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px;
+}
+.acc-curr { font-size: 25px; font-weight: 300; color: var(--grey-200); }
+.acc-price small {
+  flex-basis: 100%; margin-top: 9px;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--grey-400);
+}
+.acc-price.is-blue { color: var(--blue); }
+.acc-price.is-mute { color: var(--grey-200); font-size: 30px; }
+
+.acc-cta {
+  margin-top: 24px; display: block; text-align: center; text-decoration: none;
+  padding: 15px 16px; border-radius: 10px;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em;
+  text-transform: uppercase; font-weight: 500;
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.acc-cta:hover { transform: translateY(-2px); }
+.acc-cta-green { background: var(--green); color: #00140a; box-shadow: 0 0 28px rgba(0,255,65,0.26); }
+.acc-cta-blue  { background: transparent; color: var(--blue);     border-color: var(--blue); }
+.acc-cta-ghost { background: transparent; color: var(--grey-200); border-color: var(--border-bright); }
+.acc-cta-blue:hover  { background: rgba(61,139,255,0.1); }
+.acc-cta-ghost:hover { background: rgba(255,255,255,0.035); color: var(--white); }
+
+/* El panel entra escalonado al bajar; sin soporte se ve quieto y completo */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .acc-row { animation: accIn 0.8s cubic-bezier(.22,.68,.32,1) both; animation-timeline: view(); animation-range: entry 6% entry 70%; }
+    .acc-row:nth-child(2) { animation-range: entry 11% entry 75%; }
+    .acc-row:nth-child(3) { animation-range: entry 16% entry 80%; }
+  }
+}
+@keyframes accIn {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* El precio de la academia, dentro de su propia sección */
+.aca-precio {
+  display: flex; align-items: baseline; justify-content: center; gap: 10px;
+  flex-wrap: wrap; margin: 26px 0 6px;
+}
+.aca-precio-amt {
+  font-family: var(--font-display); font-size: 58px; line-height: 1; color: var(--green);
+  text-shadow: 0 0 30px rgba(0,255,65,0.3);
+}
+.aca-precio-amt .acc-curr { font-size: 28px; }
+.aca-precio-nota {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--grey-400);
+}
+
+@media (max-width: 860px) {
+  .acc-rows { grid-template-columns: 1fr; }
+  .acc-row { border-left: none; border-top: 1px solid var(--border); padding: 30px 22px; }
+  .acc-row:first-child { border-top: none; }
+  .acc-note { min-height: 0; }
+  .acc-name { font-size: 28px; }
+  .acc-price { font-size: 42px; }
+  .acc-chrome { padding: 0 10px; }
+  .acc-tab { font-size: 10px; padding: 11px 13px; }
+  #planes { padding-block: 0 72px; }
+  .aca-precio-amt { font-size: 46px; }
+}
+
+/* Con la mentoria la rejilla de precios pasa a cuatro tarjetas: 2x2 en
+   escritorio se lee mejor que cuatro columnas estrechas. */
+@media (min-width: 1000px) {
+  .pricing-grid { grid-template-columns: repeat(2, 1fr); max-width: 940px; }
+}
 </style>
 </head>
 <body>
@@ -1966,7 +2110,7 @@ nav { border-bottom-color: #0a2e10; }
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#soporte">Soporte</a></li>
     </ul>
-    <a href="#pagos" class="btn-nav" onclick="event.preventDefault();openPay('base','ves')">Quiero entrar →</a>
+    <a href="#pagos" class="btn-nav" onclick="event.preventDefault();openPay('academia','ves')">Quiero entrar →</a>
   </div>
   <span class="prog" aria-hidden="true"></span>
 </nav>
@@ -1992,7 +2136,7 @@ nav { border-bottom-color: #0a2e10; }
         Aprende a operar los mercados con la mente y la inteligencia artificial. No vendemos señales: enseñamos a pensar. 50% mente, 50% IA.
       </p>
       <div class="hero-ctas">
-        <a href="#pricing" class="btn-primary">Quiero entrar →</a>
+        <a href="#planes" class="btn-primary">Quiero entrar →</a>
         <a href="#academia" class="btn-ghost">Cómo funciona</a>
       </div>
       <div style="margin-top:24px;font-family:var(--font-mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--grey-400);line-height:2;">
@@ -2008,20 +2152,45 @@ nav { border-bottom-color: #0a2e10; }
   </div>
 </section>
 
-<!-- ── RESULTS BANNER ─────────────────────────────────────── -->
-<section id="results">
-  <div class="results-glow"></div>
+<!-- ── LOS TRES ACCESOS ───────────────────────────────────── -->
+<section id="planes">
   <div class="container">
-    <div class="results-inner reveal">
-      <div class="results-label">// resultados de la comunidad</div>
-      <div class="results-amount">CONSTANCIA</div>
-      <div class="results-sub">conocimiento aplicable + disciplina + IA como apoyo</div>
-      <div class="results-pills">
-        <div class="result-pill"><span class="pill-up">Mente</span><span class="pill-label">Psicología &amp; disciplina</span></div>
-        <div class="result-pill"><span class="pill-up">IA</span><span class="pill-label">Análisis con inteligencia artificial</span></div>
-        <div class="result-pill"><span class="pill-up">Riesgo</span><span class="pill-label">Gestión del riesgo</span></div>
-        <div class="result-pill"><span class="pill-up">Método</span><span class="pill-label">Setups y plan táctico</span></div>
-        <div class="result-pill"><span class="pill-up">Comunidad</span><span class="pill-label">Independencia y resultados</span></div>
+    <div class="acc-panel">
+      <div class="acc-chrome">
+        <span class="acc-tab">freedom_system · los tres accesos</span>
+        <span class="acc-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+      <div class="acc-rows">
+
+        <!-- LA ACADEMIA · abierta -->
+        <article class="acc-row is-open">
+          <div class="acc-state"><span class="acc-dot"></span>Abierta ahora</div>
+          <h3 class="acc-name">La academia</h3>
+          <p class="acc-note">La antesala del curso oficial. Cincuenta personas lo recorren en directo con Infante antes de que exista grabado.</p>
+          <div class="acc-price"><span class="acc-curr">$</span>299<small>pago único · 50 plazas</small></div>
+          <a href="#pagos" class="acc-cta acc-cta-green" onclick="event.preventDefault();openPay('academia','ves')">Reservar mi plaza →</a>
+        </article>
+
+        <!-- EL CURSO · 2027 -->
+        <article class="acc-row">
+          <div class="acc-state">2027</div>
+          <h3 class="acc-name">El curso</h3>
+          <p class="acc-note">El método entero, grabado y ordenado en módulos. Abierto a todo el mundo y sin límite de plazas.</p>
+          <div class="acc-price is-blue"><span class="acc-curr">$</span>299<small>muy pronto · 2027</small></div>
+          <a href="#pagos" class="acc-cta acc-cta-blue" onclick="event.preventDefault();payWaitlist('curso')">Avisadme cuando abra →</a>
+        </article>
+
+        <!-- LA MENTORÍA · por anunciar -->
+        <article class="acc-row">
+          <div class="acc-state">Por anunciar</div>
+          <h3 class="acc-name">La mentoría</h3>
+          <!-- ⚠️ PROVISIONAL: texto de relleno. Dime en qué consiste la
+               mentoría (formato, duración, precio) y lo cambio. -->
+          <p class="acc-note">Acompañamiento directo con Infante, uno a uno, sobre tu propia operativa.</p>
+          <div class="acc-price is-mute">Por anunciar<small>escríbenos para los detalles</small></div>
+          <a href="#pagos" class="acc-cta acc-cta-ghost" onclick="event.preventDefault();payWaitlist('mentoria')">Pedir información →</a>
+        </article>
+
       </div>
     </div>
   </div>
@@ -2031,9 +2200,14 @@ nav { border-bottom-color: #0a2e10; }
 <section id="academia">
   <div class="container">
     <div class="includes-header reveal">
-      <span class="tag">// la primera promoción</span>
+      <span class="tag">// la antesala del curso oficial</span>
       <h2 class="section-title">La academia que lanza<br>el <span class="accent">curso oficial</span></h2>
-      <p class="section-sub" style="margin:14px auto 0;">Antes de que el curso salga para todo el mundo, se abre una promoción cerrada de cincuenta personas que lo recorre en directo con Infante. Tres clases por semana, y la operativa de cada uno revisada en clase. Es la vía rápida, y es la única que se cierra.</p>
+      <p class="section-sub" style="margin:14px auto 0;">La academia es la antesala del curso oficial: antes de que salga para todo el mundo, cincuenta personas lo recorren en directo con Infante. Tres clases por semana, y la operativa de cada uno revisada en clase. Es la vía rápida, y es la única que se cierra.</p>
+    </div>
+
+    <div class="aca-precio reveal">
+      <span class="aca-precio-amt"><span class="acc-curr">$</span>299</span>
+      <span class="aca-precio-nota">pago único · disponible ahora mismo</span>
     </div>
 
     <!-- ⚠️ PROVISIONAL: pon en class="on" tantos <span> como plazas ocupadas
@@ -2083,7 +2257,60 @@ nav { border-bottom-color: #0a2e10; }
     </div>
 
     <div style="text-align:center;margin-top:40px;">
-      <a href="#pricing" class="btn-primary">Reservar mi plaza →</a>
+      <a href="#pagos" class="btn-primary" onclick="event.preventDefault();openPay('academia','ves')">Reservar mi plaza — $299 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── BIOGRAFIA ────────────────────────────────────────────── -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap reveal">
+        <div style="width:100%;max-width:480px;margin:0 auto;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border-bright);position:relative;box-shadow:0 0 40px rgba(0,255,65,0.1);">
+          
+          <div class="about-corner">
+            <div class="corner-num">50/50</div>
+            <div class="corner-txt">mente + IA</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-content reveal">
+        <span class="tag">// el instructor</span>
+        <h2>SOBRE<br><span class="accent">INFANTE</span></h2>
+        <p>Soy <strong style="color:var(--white);">Infante</strong>, fundador de Freedom System y CEO de OWN THE WAR. Mi objetivo no es prometerte que serás millonario, sino darte algo más valioso: <strong style="color:var(--white);">conocimiento, libertad y control.</strong></p>
+        <p>Freedom System nació de una idea simple: formar una generación de traders conscientes que salgan del sistema, dominen su mente y usen la inteligencia artificial para tomar decisiones más claras, responsables y medibles.</p>
+        <p>Aquí no vendemos señales ni prometemos dinero rápido. Democratizamos el conocimiento del trading con un método práctico: <strong style="color:var(--green);">50% mente, 50% IA.</strong> Sin humo. Sin dependencia. Con estructura. En tres meses puedes aprender lo que otros tardan años, si decides hacerlo.</p>
+        <p class="blockquote" style="border-left:4px solid var(--green);padding-left:14px;font-style:italic;color:var(--grey-200);">"No te prometo ser millonario. Te prometo conocimiento, libertad y control."</p>
+        <div class="about-creds">
+          <div class="cred"><span class="cred-dot"></span>Fundador de Freedom System · CEO de OWN THE WAR</div>
+          <div class="cred"><span class="cred-dot"></span>Método 50% mente + 50% IA · sin señales, sin dependencia</div>
+          <div class="cred"><span class="cred-dot"></span>Enfoque en disciplina, gestión del riesgo y pensamiento propio</div>
+          <div class="cred"><span class="cred-dot"></span>Comunidad enfocada en independencia y resultados reales</div>
+          <div class="cred"><span class="cred-dot"></span>Clases en vivo semanales + actualizaciones continuas de contenido</div>
+          <div class="cred"><span class="cred-dot"></span>Plan Premium "Freedom Live Experience" · próximamente</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── RESULTS BANNER ─────────────────────────────────────── -->
+<section id="results">
+  <div class="results-glow"></div>
+  <div class="container">
+    <div class="results-inner reveal">
+      <div class="results-label">// resultados de la comunidad</div>
+      <div class="results-amount">CONSTANCIA</div>
+      <div class="results-sub">conocimiento aplicable + disciplina + IA como apoyo</div>
+      <div class="results-pills">
+        <div class="result-pill"><span class="pill-up">Mente</span><span class="pill-label">Psicología &amp; disciplina</span></div>
+        <div class="result-pill"><span class="pill-up">IA</span><span class="pill-label">Análisis con inteligencia artificial</span></div>
+        <div class="result-pill"><span class="pill-up">Riesgo</span><span class="pill-label">Gestión del riesgo</span></div>
+        <div class="result-pill"><span class="pill-up">Método</span><span class="pill-label">Setups y plan táctico</span></div>
+        <div class="result-pill"><span class="pill-up">Comunidad</span><span class="pill-label">Independencia y resultados</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -2134,40 +2361,6 @@ nav { border-bottom-color: #0a2e10; }
     </div>
   </div>
 </section>
-
-<!-- ── JONATHAN ────────────────────────────────────────────── -->
-<section id="about">
-  <div class="container">
-    <div class="about-grid">
-      <div class="about-img-wrap reveal">
-        <div style="width:100%;max-width:480px;margin:0 auto;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border-bright);position:relative;box-shadow:0 0 40px rgba(0,255,65,0.1);">
-          
-          <div class="about-corner">
-            <div class="corner-num">50/50</div>
-            <div class="corner-txt">mente + IA</div>
-          </div>
-        </div>
-      </div>
-      <div class="about-content reveal">
-        <span class="tag">// el instructor</span>
-        <h2>SOBRE<br><span class="accent">INFANTE</span></h2>
-        <p>Soy <strong style="color:var(--white);">Infante</strong>, fundador de Freedom System y CEO de OWN THE WAR. Mi objetivo no es prometerte que serás millonario, sino darte algo más valioso: <strong style="color:var(--white);">conocimiento, libertad y control.</strong></p>
-        <p>Freedom System nació de una idea simple: formar una generación de traders conscientes que salgan del sistema, dominen su mente y usen la inteligencia artificial para tomar decisiones más claras, responsables y medibles.</p>
-        <p>Aquí no vendemos señales ni prometemos dinero rápido. Democratizamos el conocimiento del trading con un método práctico: <strong style="color:var(--green);">50% mente, 50% IA.</strong> Sin humo. Sin dependencia. Con estructura. En tres meses puedes aprender lo que otros tardan años, si decides hacerlo.</p>
-        <p class="blockquote" style="border-left:4px solid var(--green);padding-left:14px;font-style:italic;color:var(--grey-200);">"No te prometo ser millonario. Te prometo conocimiento, libertad y control."</p>
-        <div class="about-creds">
-          <div class="cred"><span class="cred-dot"></span>Fundador de Freedom System · CEO de OWN THE WAR</div>
-          <div class="cred"><span class="cred-dot"></span>Método 50% mente + 50% IA · sin señales, sin dependencia</div>
-          <div class="cred"><span class="cred-dot"></span>Enfoque en disciplina, gestión del riesgo y pensamiento propio</div>
-          <div class="cred"><span class="cred-dot"></span>Comunidad enfocada en independencia y resultados reales</div>
-          <div class="cred"><span class="cred-dot"></span>Clases en vivo semanales + actualizaciones continuas de contenido</div>
-          <div class="cred"><span class="cred-dot"></span>Plan Premium "Freedom Live Experience" · próximamente</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 
 <!-- ── AUDIT SECTION ──────────────────────────────────────── -->
 <section id="audit">
@@ -2249,8 +2442,8 @@ nav { border-bottom-color: #0a2e10; }
   <div class="container">
     <div class="pricing-header reveal">
       <span class="tag">// elige tu acceso</span>
-      <h2 class="section-title">Tres formas de<br>sentarte a la <span class="accent2">mesa</span>.</h2>
-      <p class="section-sub" style="margin:14px auto 0;">La academia y la comunidad se contratan por separado. El curso oficial llega después, para todo el mundo.</p>
+      <h2 class="section-title">Cuatro formas de<br>sentarte a la <span class="accent2">mesa</span>.</h2>
+      <p class="section-sub" style="margin:14px auto 0;">La academia está abierta ahora y la comunidad va aparte, sin caducar. El curso oficial cuesta lo mismo que la academia y llega en 2027 para todo el mundo; la mentoría se anuncia pronto.</p>
     </div>
 
     <div class="pricing-grid">
@@ -2262,9 +2455,10 @@ nav { border-bottom-color: #0a2e10; }
         <div class="plan-desc">// primera promoción · 50 plazas</div>
         <div class="price-was">Acceso anticipado</div>
         <div class="plan-price">
-          <span class="price-amt green" style="font-size:34px;">Por anunciar</span>
+          <span class="price-curr">$</span>
+          <span class="price-amt green">299</span>
         </div>
-        <span class="price-period">precio por definir · plazas limitadas</span>
+        <span class="price-period">pago único · 50 plazas</span>
         <div style="margin-top:8px;"><span class="price-save save-green">Recorres el curso en directo antes de que salga</span></div>
         <hr class="plan-divider">
         <ul class="plan-features">
@@ -2275,7 +2469,7 @@ nav { border-bottom-color: #0a2e10; }
           <li><span class="chk">✔</span> IA aplicada al análisis</li>
           <li><span class="chk">✔</span> Plantillas y journal desde el primer día</li>
         </ul>
-        <a href="#pagos" class="btn-plan btn-green" style="text-decoration:none;display:block;text-align:center;" onclick="event.preventDefault();payWaitlist('clases')">
+        <a href="#pagos" class="btn-plan btn-green" style="text-decoration:none;display:block;text-align:center;" onclick="event.preventDefault();openPay('academia','ves')">
           Reservar mi plaza →
         </a>
         <div class="plan-note" style="margin-top:12px;justify-content:center;">
@@ -2327,9 +2521,10 @@ nav { border-bottom-color: #0a2e10; }
         <div class="plan-desc">// online · a tu ritmo</div>
         <div class="price-was">Abierto a todo el mundo</div>
         <div class="plan-price">
-          <span class="price-amt blue" style="font-size:34px;">Próximamente</span>
+          <span class="price-curr">$</span>
+          <span class="price-amt blue">299</span>
         </div>
-        <span class="price-period">sin fecha de apertura</span>
+        <span class="price-period">muy pronto · 2027</span>
         <div style="margin-top:8px;"><span class="price-save save-blue">El método entero, grabado y sin límite de plazas</span></div>
         <hr class="plan-divider">
         <ul class="plan-features">
@@ -2343,6 +2538,32 @@ nav { border-bottom-color: #0a2e10; }
         </a>
         <div class="plan-note" style="margin-top:12px;justify-content:center;">
           <span>Te escribimos antes que a nadie</span>
+        </div>
+      </div>
+
+      <!-- LA MENTORIA · por anunciar -->
+      <!-- PROVISIONAL: la mentoria es un producto nuevo y solo tengo el
+           nombre. Dime formato, duracion y precio y relleno esta tarjeta. -->
+      <div class="plan-card soon reveal">
+        <div class="plan-name">LA <span class="accent2">MENTORÍA</span></div>
+        <div class="plan-desc">// uno a uno · con Infante</div>
+        <div class="price-was">Acompañamiento directo</div>
+        <div class="plan-price">
+          <span class="price-amt" style="font-size:34px;color:var(--grey-200);">Por anunciar</span>
+        </div>
+        <span class="price-period">precio y formato por definir</span>
+        <div style="margin-top:8px;"><span class="price-save save-green">Tu operativa revisada en privado</span></div>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="chk">&#10004;</span> Sesiones uno a uno con Infante</li>
+          <li><span class="chk">&#10004;</span> Revisión privada de tu operativa</li>
+          <li><span class="chk">&#10004;</span> Plan de trabajo a tu medida</li>
+        </ul>
+        <a href="#pagos" class="btn-plan btn-blue" style="text-decoration:none;display:block;text-align:center;" onclick="event.preventDefault();payWaitlist('mentoria')">
+          Pedir información →
+        </a>
+        <div class="plan-note" style="margin-top:12px;justify-content:center;">
+          <span>Te contamos los detalles por WhatsApp</span>
         </div>
       </div>
     </div>
@@ -2378,10 +2599,10 @@ nav { border-bottom-color: #0a2e10; }
         <div class="pay-method-name">BOLÍVARES</div>
         <div class="pay-method-sub">// pago móvil</div>
         <div class="pay-method-desc">
-          Paga en bolívares a la tasa Binance del momento. Te mostramos el monto exacto ya convertido y los datos para el Pago Móvil.
+          Paga en bolívares a la tasa del mercado paralelo del momento. Te mostramos el monto exacto ya convertido y los datos para el Pago Móvil.
         </div>
         <div class="pay-method-brands">
-          <span>Pago Móvil</span><span>Tasa Binance</span>
+          <span>Pago Móvil</span><span>Tasa paralelo</span>
         </div>
         <div class="pay-method-cta">Pagar en Bs →</div>
       </div>
@@ -2447,16 +2668,16 @@ nav { border-bottom-color: #0a2e10; }
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">¿Cómo funciona el pago? <span class="faq-arrow">+</span></div>
-        <div class="faq-a">Son dos cosas separadas. Las <strong>clases en vivo</strong> todavía no tienen precio publicado: reservas plaza y te confirmamos el importe antes de cobrar nada. La <strong>comunidad</strong> son <strong>$50/mes</strong> sin permanencia, y se puede contratar sin estar en las clases. El <strong>curso completo</strong> aún no está a la venta.</div>
+        <div class="faq-a">Son productos separados. La <strong>academia</strong> son <strong>$299</strong> en un pago único, y es lo que está abierto ahora mismo. La <strong>comunidad</strong> son <strong>$50/mes</strong> sin permanencia, y se puede contratar sin estar en la academia. El <strong>curso completo</strong> costará lo mismo, <strong>$299</strong>, y abre en <strong>2027</strong>: la diferencia es que la academia lo recorre en directo y con tu operativa revisada. La <strong>mentoría</strong> todavía no tiene precio publicado.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">¿Y el curso grabado, para cuándo? <span class="faq-arrow">+</span></div>
-        <div class="faq-a">Se está grabando con la primera promoción de la academia: lo que allí se da en directo es lo que después queda publicado en módulos, abierto a todo el mundo y sin límite de plazas. Todavía no tiene fecha. Si quieres que te avisemos cuando abra, déjanos tu contacto.</div>
+        <div class="faq-a">Se está grabando con la primera promoción de la academia: lo que allí se da en directo es lo que después queda publicado en módulos, abierto a todo el mundo y sin límite de plazas. Abre en <strong>2027</strong> y costará <strong>$299</strong>. Si quieres que te avisemos el día que salga, déjanos tu contacto.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">¿Qué formas de pago aceptan? <span class="faq-arrow">+</span></div>
         <div class="faq-a">
-          Tres: <strong>bolívares</strong> por Pago Móvil (te calculamos el monto exacto a la tasa Binance del momento),
+          Tres: <strong>bolívares</strong> por Pago Móvil (te calculamos el monto exacto a la tasa del mercado paralelo del momento),
           <strong>criptomonedas</strong> (USDT por TRC20, Bitcoin y Binance Pay) y <strong>tarjeta</strong> de débito o crédito
           (Visa, Mastercard y Amex) mediante un checkout seguro externo.
           <a href="#pagos" onclick="event.preventDefault();openPay('base','ves')" style="color:var(--green);text-decoration:underline;">Abrir la pasarela de pago →</a>
@@ -2508,7 +2729,7 @@ nav { border-bottom-color: #0a2e10; }
     <h2>ROMPE EL<br>CICLO. ENTRA <span class="accent">HOY</span>.</h2>
     <p>La libertad no se compra: se entrena. Da el primer paso ahora con conocimiento real y la IA de tu lado.</p>
     <div class="cta-actions">
-      <a href="#pricing" class="btn-primary" style="font-size:16px;padding:18px 44px;">Reservar mi plaza →</a>
+      <a href="#pagos" class="btn-primary" style="font-size:16px;padding:18px 44px;" onclick="event.preventDefault();openPay('academia','ves')">Reservar mi plaza — $299 →</a>
       <a href="#faq" class="btn-ghost" style="padding:18px 28px;">Ver preguntas frecuentes</a>
     </div>
     <div class="urgency" style="margin-top:28px;">
@@ -2556,6 +2777,10 @@ nav { border-bottom-color: #0a2e10; }
 
     <!-- Selector de plan -->
     <div class="pay-plans">
+      <div class="pay-plan" id="payPlan-academia" onclick="payPlan('academia')">
+        <div class="pay-plan-name">La Academia</div>
+        <div class="pay-plan-price">$299 · pago único</div>
+      </div>
       <div class="pay-plan active" id="payPlan-base" onclick="payPlan('base')">
         <div class="pay-plan-name">Comunidad</div>
         <div class="pay-plan-price">$50/mes · sin permanencia</div>
@@ -2566,7 +2791,7 @@ nav { border-bottom-color: #0a2e10; }
     <div class="pay-amount">
       <div class="pay-amount-usd"><span class="curr">$</span><span id="payUsd">50</span></div>
       <div class="pay-amount-conv" id="payConv">≈ <strong>Bs 151.180,02</strong></div>
-      <div class="pay-rate-note" id="payRateNote"><span class="live-dot"></span>Consultando la tasa Binance…</div>
+      <div class="pay-rate-note" id="payRateNote"><span class="live-dot"></span>Consultando la tasa del día…</div>
     </div>
 
     <!-- Tabs -->
@@ -2822,10 +3047,11 @@ const PAY_CONFIG = {
 
   /* ── Planes ───────────────────────────────────────────── */
   plans: {
-    /* Las clases en vivo todavía no tienen precio: su botón abre la lista
-       de reserva por WhatsApp, no el checkout. Aquí solo va lo que se cobra. */
-    base:    { name: 'Comunidad',      usd: 50, note: 'suscripción mensual' },
-    mensual: { name: 'Comunidad',      usd: 50, note: 'suscripción mensual' }
+    /* La academia y la comunidad se cobran por aquí. El curso oficial y la
+       mentoría todavía no: sus botones abren la lista de espera por WhatsApp. */
+    academia: { name: 'La Academia', usd: 299, note: 'pago único · 50 plazas' },
+    base:     { name: 'Comunidad',   usd: 50,  note: 'suscripción mensual' },
+    mensual:  { name: 'Comunidad',   usd: 50,  note: 'suscripción mensual' }
   },
 
   /* ── Bolívares · Pago Móvil / transferencia ───────────── */
@@ -2836,13 +3062,20 @@ const PAY_CONFIG = {
     titular:  'Francisco Infante',
     cuenta:   '',                           // vacio = solo Pago Movil; la fila de
                                             // transferencia se oculta sola
-    rate:     1012.00,                      // respaldo final (Binance P2P del 14/10/2026). Solo se usa si
+    rate:     1002.95,                      // respaldo final (paralelo del 25/10/2026). Solo se usa si
                                             // falla la consulta Y el visitante no tiene ninguna tasa guardada
-    autoRate: true,                         // true = consulta la tasa Binance cada vez que se abre
-    // Tasa Binance P2P USDT/VES. Devuelve { ask, totalAsk, bid, totalBid, time }
+    autoRate: true,                         // true = consulta la tasa cada vez que se abre el checkout
+    // Tasa del mercado paralelo. Devuelve { promedio, fechaActualizacion, ... }
     // y permite CORS, que es lo que hace falta para pedirla desde el navegador.
-    // (ve.dolarapi.com solo publica BCV y paralelo, por eso no sirve aquí.)
-    rateApi:  'https://criptoya.com/api/binancep2p/usdt/ves/1'
+    //
+    // OJO: aqui estaba 'https://criptoya.com/api/binancep2p/usdt/ves/1', que es
+    // la tasa Binance P2P. El 25/10/2026 ese servicio empezo a responder 403
+    // (bloqueo de Cloudflare) tanto desde el navegador como desde consola, asi
+    // que el sitio llevaba dias cobrando con el valor de respaldo. El paralelo
+    // de dolarapi sigue a menos del 1% de la de Binance y se actualiza varias
+    // veces al dia. Si criptoya revive, se puede volver: el parser acepta las
+    // dos formas de respuesta.
+    rateApi:  'https://ve.dolarapi.com/v1/dolares/paralelo'
   },
 
   /* ── Criptomonedas ────────────────────────────────────── */
@@ -2925,7 +3158,7 @@ const payState = {
   tab:  'ves',
   net:  PAY_CONFIG.crypto.nets[0].id,
   rate: PAY_CONFIG.ves.rate,
-  rateLabel: 'tasa de referencia'
+  rateLabel: 'de referencia'   // el texto ya empieza por "Tasa ", no lo repitas aqui
 };
 
 function payPlanData()  { return PAY_CONFIG.plans[payState.plan] || PAY_CONFIG.plans.base; }
@@ -2933,16 +3166,18 @@ function payNetData()   { return PAY_CONFIG.crypto.nets.find(n => n.id === paySt
 function payFmtVes(n)   { return 'Bs ' + n.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function paySet(id, txt) { const el = document.getElementById(id); if (el) el.textContent = txt; }
 
-/* ─── Tasa Binance P2P ──────────────────────────────────────
+/* ─── Tasa del mercado paralelo ─────────────────────────────
    Se consulta al cargar la pagina y cada vez que se abre el checkout. A
-   diferencia de la del BCV, que cambia una vez al dia, la de Binance se
-   mueve durante la jornada: por eso la etiqueta muestra tambien la hora.
+   diferencia de la del BCV, que cambia una vez al dia, esta se mueve
+   durante la jornada: por eso la etiqueta muestra tambien la hora.
 
    La ultima tasa buena queda guardada en el navegador del visitante. Si algun
    dia el servicio no responde, se usa esa en lugar del valor de respaldo del
    config, que envejece en cuanto pasan unas semanas sin tocarlo. Orden de
    preferencia: tasa del dia → ultima tasa conocida → respaldo del config. */
-const RATE_CACHE = 'fs_binance_rate';
+const RATE_CACHE = 'fs_rate_paralelo';   // clave nueva a proposito: si no, a
+                                         // quien tuviera guardada una tasa
+                                         // Binance vieja se le reutilizaria
 const rateStore = {
   get()  { try { return JSON.parse(localStorage.getItem(RATE_CACHE) || 'null'); } catch (e) { return null; } },
   set(o) { try { localStorage.setItem(RATE_CACHE, JSON.stringify(o)); } catch (e) {} }
@@ -2954,9 +3189,9 @@ function payApplyRate(value, fechaISO) {
   payState.rate = v;
   const f = fechaISO ? new Date(fechaISO) : null;
   payState.rateLabel = (f && !isNaN(f))
-    ? 'Binance · ' + f.toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit' }) +
+    ? 'paralelo · ' + f.toLocaleDateString('es-VE', { day: '2-digit', month: '2-digit' }) +
       ' ' + f.toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit' })
-    : 'Binance P2P';
+    : 'del mercado paralelo';
   payRefresh();
   return true;
 }
@@ -3199,10 +3434,15 @@ window.closeUsdt  = closePay;
    abre WhatsApp para que Infante confirme plaza e importe. */
 function payWaitlist(que) {
   const textos = {
-    clases: 'Hola, quiero reservar una plaza en LA ACADEMIA (primera promoción, 50 plazas). ¿Me confirmas disponibilidad y precio?',
-    curso:  'Hola, avisadme cuando abra EL CURSO COMPLETO de Freedom System.'
+    clases:   'Hola, quiero reservar una plaza en LA ACADEMIA (primera promoción, 50 plazas, $299). ¿Me confirmas disponibilidad?',
+    curso:    'Hola, avisadme cuando abra EL CURSO COMPLETO de Freedom System ($299, 2027).',
+    mentoria: 'Hola, quiero información sobre LA MENTORÍA de Freedom System: formato, duración y precio.'
   };
-  const asuntos = { clases: 'Reserva de plaza — Clases en vivo', curso: 'Aviso de apertura — Curso completo' };
+  const asuntos = {
+    clases:   'Reserva de plaza — La academia',
+    curso:    'Aviso de apertura — Curso completo',
+    mentoria: 'Información — La mentoría'
+  };
   const k = textos[que] ? que : 'clases';
   const msg = textos[k];
   if (PAY_CONFIG.whatsapp) {
@@ -3341,9 +3581,9 @@ if (resultNum) {
 
 <!-- ── STICKY BAR ────────────────────────────────────────── -->
 <div class="sticky-bar" id="stickyBar">
-  <div class="sticky-bar-text">🟢 LA ACADEMIA · <strong>primera promoción</strong> · 50 plazas</div>
+  <div class="sticky-bar-text">🟢 LA ACADEMIA · <strong>abierta ahora</strong> · 50 plazas · $299</div>
   <div class="sticky-bar-actions">
-    <a href="#pricing" class="sticky-btn-green" onclick="event.preventDefault();payWaitlist('clases')">Reservar plaza</a>
+    <a href="#pagos" class="sticky-btn-green" onclick="event.preventDefault();openPay('academia','ves')">Reservar · $299</a>
     <a href="#faq" class="sticky-btn-blue">Ver FAQ</a>
     <button class="sticky-close" onclick="document.getElementById('stickyBar').style.display='none'">✕</button>
   </div>
@@ -3360,8 +3600,8 @@ if (resultNum) {
       El primer paso es ahora.
     </div>
     <div class="exit-actions">
-      <a href="#pricing" class="btn-primary" style="font-size:15px;padding:16px;" onclick="event.preventDefault();closeExit();payWaitlist('clases')">
-        Reservar mi plaza — quedan 6 →
+      <a href="#pagos" class="btn-primary" style="font-size:15px;padding:16px;" onclick="event.preventDefault();closeExit();openPay('academia','ves')">
+        Reservar mi plaza — $299 →
       </a>
       <a href="#faq" class="btn-plan btn-blue" style="font-size:14px;padding:14px;text-decoration:none;display:block;text-align:center;" onclick="closeExit()">
         Ver preguntas frecuentes
@@ -3372,7 +3612,7 @@ if (resultNum) {
 </div>
 
 <!-- ── FLOAT BUTTON ───────────────────────────────────────── -->
-<a href="#pagos" class="float-btn" id="floatBtn" onclick="event.preventDefault();openPay('base','ves')">
+<a href="#pagos" class="float-btn" id="floatBtn" onclick="event.preventDefault();openPay('academia','ves')">
   📩 Reservar plaza
 </a>
 

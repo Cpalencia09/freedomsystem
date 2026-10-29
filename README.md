@@ -3,8 +3,23 @@
 Landing page del curso **Freedom System** (Infante · CEO de OWN THE WAR), con pasarela de pago
 integrada para **bolívares, criptomonedas y tarjeta**.
 
-Sitio estático de un solo archivo: `index.html` contiene el HTML, el CSS y el JavaScript.
-No hay build, ni dependencias, ni backend.
+Sitio estático de **cuatro páginas**, sin build, sin dependencias y sin backend:
+
+| Archivo | Qué es |
+|---------|--------|
+| `index.html` | Portada. Acaba en la auditoría de resultados: hero → por dónde entrar → la academia → biografía → auditoría. |
+| `academia.html` | La academia al detalle, con su pasarela. $299, pago único. |
+| `comunidad.html` | La comunidad al detalle, con su pasarela. $50/mes. |
+| `curso.html` | El curso de 2027. **No cobra**: lista de espera por WhatsApp. |
+| `estilos.css` | Hoja de estilos compartida por las cuatro. |
+| `pagos.js` | Lógica compartida: tasa de cambio, pasarela y FAQ. Incluye el marcado del modal de pago, que se inyecta al cargar. |
+
+Hasta octubre de 2026 era un único `index.html` con todo dentro. Se partió al dar a cada producto
+su propia página: el CSS y el JS salieron a archivos compartidos para no repetir 2.000 y 800
+líneas en cada una.
+
+**Al tocar la cabecera** (dominio, píxel, analitica) hay que hacerlo en las **cuatro** páginas,
+no solo en `index.html`.
 
 **En producción:** https://freedomsystem.net/
 
